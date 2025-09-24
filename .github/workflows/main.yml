@@ -36,9 +36,9 @@ jobs:
         -testSuitePath="Test Suites\\Smoke Testing" ^
         -browserType="Chrome (headless)"
 
-    # Step 5: Upload Test Reports as Artifacts
+    # Step 5: Upload Test Reports as Artifacts (updated to v4)
     - name: Upload Katalon Test Reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: katalon-reports
         path: ${{ github.workspace }}\Reports\
