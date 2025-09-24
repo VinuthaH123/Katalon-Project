@@ -27,10 +27,14 @@ jobs:
         Invoke-WebRequest -Uri https://github.com/katalon-studio/katalon-studio/releases/download/v8.9.0/Katalon_Studio_Engine_Windows_64-8.9.0.zip -OutFile katalon.zip
         Expand-Archive katalon.zip -DestinationPath katalon
 
-    # Step 4: Run Katalon Test Suite
+    # Step 4: Run Katalon Test Suite (headless Chrome)
     - name: Execute Katalon Tests
       run: |
-        katalon\katalon-execute.bat -projectPath="%GITHUB_WORKSPACE%\Record and Replay.prj" -retry=0 -testSuitePath="Test Suites\Smoke Testing" -browserType="Chrome"
+        katalon\katalon-execute.bat ^
+        -projectPath="%GITHUB_WORKSPACE%\Record and Replay.prj" ^
+        -retry=0 ^
+        -testSuitePath="Test Suites\\Smoke Testing" ^
+        -browserType="Chrome (headless)"
 
     # Step 5: Upload Test Reports as Artifacts
     - name: Upload Katalon Test Reports
@@ -38,4 +42,3 @@ jobs:
       with:
         name: katalon-reports
         path: ${{ github.workspace }}\Reports\
-
