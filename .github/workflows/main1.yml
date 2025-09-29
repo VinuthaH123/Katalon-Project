@@ -1,0 +1,37 @@
+name: Katalon Trial Simulation Workflow
+
+on:
+  workflow_dispatch:  # manually triggered
+  push:
+    branches: [ main ]
+
+jobs:
+  simulate-katalon:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java Environment (Required for Katalon)
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Simulate Katalon Test Execution
+        run: |
+          echo "🔹 Starting Katalon CI/CD Simulation..."
+          echo "✅ Checking for project files..."
+          ls -la
+          echo "✅ Project detected. Simulating test execution..."
+          mkdir -p simulation-reports
+          echo "Simulated test result: PASS" > simulation-reports/result.txt
+          echo "Simulated report generated successfully."
+          echo "✅ Simulation complete."
+
+      - name: Upload Simulation Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: katalon-simulation-report
+          path: simulation-reports/
