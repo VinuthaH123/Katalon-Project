@@ -1,0 +1,46 @@
+name: Run Katalon Test Suite (Linux)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  katalon-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Download Katalon Runtime Engine (Linux)
+      - name: Download Katalon Runtime Engine (Linux)
+        run: |
+          mkdir -p katalon
+          wget https://github.com/katalon-studio/katalon-studio/releases/download/v9.1.0/Katalon_Studio_Engine_Linux_64-9.1.0.tar.gz -O katalon.tar.gz
+          tar -xzf katalon.tar.gz -C katalon
+
+      # Step 3: Run Katalon Test Suite (headless Chrome)
+      - name: Run Katalon Test Suite
+        env:
+          KATALON_API_KEY: ${{ secrets.KATALON_API_KEY }}
+        run: |
+          chmod +x ./katalon/Katalon_Studio_Engine_Linux_64-9.1.0/katalonc
+          ./katalon/Katalon_Studio_Engine_Linux_64-9.1.0/katalonc \
+            -noSplash \
+            -runMode=console \
+            -projectPath="$(pwd)/Record and Replay.prj" \
+            -retry=0 \
+            -testSuitePath="Test Suites/Smoke Testing" \
+            -executionProfile="default" \
+            -browserType="Chrome (headless)" \
+            -apiKey=$KATALON_API_KEY
+
+      # Step 4: Upload generated reports
+      - name: Upload Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: Katalon-Test-Reports
+          path: Reports/
